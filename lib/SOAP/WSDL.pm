@@ -166,7 +166,7 @@ sub _wsdl_get_service :PRIVATE {
     my $wsdl = $definitions_of{ $ident };
     return $service_of{ $ident } = $servicename_of{ $ident }
         ? $wsdl->find_service( $wsdl->get_targetNamespace() , $servicename_of{ $ident } )
-        : $service_of{ $ident } = $wsdl->get_service()->[ 0 ];
+        : $wsdl->get_service()->[ 0 ];
 } ## end sub _wsdl_get_service
 
 sub _wsdl_get_port :PRIVATE  {
@@ -174,8 +174,8 @@ sub _wsdl_get_port :PRIVATE  {
     my $wsdl = $definitions_of{ $ident };
     my $ns   = $wsdl->get_targetNamespace();
     return $port_of{ $ident } = $portname_of{ $ident }
-        ? $service_of{ $ident }->get_port( $ns, $portname_of{ $ident } )
-        : $port_of{ $ident } = $service_of{ $ident }->get_port()->[ 0 ];
+        ? $service_of{ $ident }->get_port( $ns, $portname_of{ $ident } )->[0]
+        : $service_of{ $ident }->get_port()->[ 0 ];
 }
 
 sub _wsdl_get_binding :PRIVATE {
