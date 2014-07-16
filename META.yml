@@ -8,6 +8,7 @@ license: artistic
 resources:
   license: http://opensource.org/licenses/artistic-license.php
 requires:
+  Class::Load: 0
   Class::Std::Fast: 0.0.5
   Data::Dumper: 0
   Date::Format: 0

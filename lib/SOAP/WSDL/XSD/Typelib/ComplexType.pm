@@ -7,6 +7,7 @@ use SOAP::WSDL::XSD::Typelib::Builtin;
 use Scalar::Util qw(blessed);
 use Data::Dumper;
 require Class::Std::Fast::Storable;
+use Class::Load ();
 
 use base qw(SOAP::WSDL::XSD::Typelib::Builtin::anyType);
 
@@ -155,9 +156,8 @@ sub _factory {
         my $type = $CLASSES_OF{ $class }->{ $name }
             or croak "No class given for $name";
 
-        # require all types here
-        $type->isa('UNIVERSAL')
-            or eval "require $type"
+        Class::Load::is_class_loaded($type)
+            or eval { Class::Load::load_class $type }
                 or croak $@;
 
         # check now, so we don't need to do it later.
