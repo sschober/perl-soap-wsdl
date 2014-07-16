@@ -174,6 +174,38 @@ sub schema {
     return $parent->schema();
 }
 
+# this is used when we have a namespaces hash, but need to find the prefix to
+# some namespace
+# using %prefix = reverse %namespace; can break, as %namespace may contain
+# duplicate values, due to the '#default' key:
+#
+#      '#default' => 'urn:myNamespace',
+#      'tns'      => 'urn:myNamespace',
+#      'xml'      => 'http://www.w3.org/XML/1998/namespace',
+#      'wsdl'     => 'http://schemas.xmlsoap.org/wsdl/',
+#      'xsd'      => 'http://www.w3.org/2001/XMLSchema',
+#      'soap'     => 'http://schemas.xmlsoap.org/wsdl/soap/'
+#
+# 'reverse'-ing that with Perl 5.18 gives 'urn:myNamespace' => '#default' or
+# 'urn:myNamespace' => 'tns' with 50% probability due to the hash randomization
+# feature.
+# Using reverse causes t/003_wsdl_based_serializer.t to fail most of the time
+# because the prefix for 'urn:myNamespace' is sometimes '#default' (wrong),
+# sometimes 'tns' (right)
+
+sub prefix_from_namespace {
+    my ( $self, $ns ) = @_;
+
+    my %prefix;
+
+    while ( my ( $prefix, $ns ) = each %$ns ) {
+        $prefix{$ns} = $prefix
+            unless $prefix eq '#default' and exists $prefix{$ns};
+    }
+
+    return \%prefix;
+}
+
 1;
 
 __END__

@@ -19,8 +19,8 @@ sub serialize {
     $xml .= '<' . join ' ', $name, @{ $opt->{ attributes } };
     if ( $opt->{ autotype }) {
         my $ns = $self->get_targetNamespace();
-        my %prefix_of = reverse %{ $opt->{ namespace } };
-        my $prefix = $prefix_of{ $ns }
+        my $prefix_of = $self->prefix_from_namespace( $opt->{ namespace } );
+        my $prefix = $prefix_of->{ $ns }
             || die 'No prefix found for namespace '. $ns;
         $xml .= ' type="' . $prefix . ':'
           . $self->get_name() . '"';

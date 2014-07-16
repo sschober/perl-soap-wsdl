@@ -100,9 +100,9 @@ sub _serialize_single {
     $xml .= '<' . join ' ', $name, @{ $opt->{ attributes } };
     if ( $opt->{ autotype }) {
         # reverse namespace by prefix hash
-        my %prefix_of = reverse %{ $opt->{ namespace } };
+        my $prefix_of = $self->prefix_from_namespace( $opt->{namespace} );
         my $ns = $self->get_targetNamespace();
-        my $prefix = $prefix_of{ $ns }
+        my $prefix = $prefix_of->{ $ns }
            || die 'No prefix found for namespace '. $ns;
         $xml .= ' type="' . $prefix . ':' . $self->get_name() .'"';
     }
