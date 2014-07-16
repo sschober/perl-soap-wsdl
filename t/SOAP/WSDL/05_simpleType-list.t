@@ -36,7 +36,11 @@ ok $xml = $soap->call('test', testAll => [ 1, 2 ] ), 'Serialize list call';
 #5
 ok ( $xml2 = $soap->call('test', testAll => "1 2" ) , 'Serialized scalar call' );
 #6
-ok( $xml eq $xml2, 'Got expected result');
+SKIP: {
+    skip "Test::XML needed for comparing XML", 1
+        unless eval { require Text::XML };
+    is_xml( $xml, $xml2, 'Got expected result');
+}
 
 #7	
 TODO: {
